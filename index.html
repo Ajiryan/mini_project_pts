@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UMKM Catalog Hub - Dashboard Produk</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+z<body>
+
+  <!-- Header & Nav: Nama Aplikasi & Identitas Mahasiswa (Poin D & E1) -->
+  <header class="main-header">
+    <div class="header-container">
+      <div class="brand-info">
+        <h1>UMKM Catalog Hub</h1>
+        <p class="student-id">Oleh: <strong>Aji Ryan Hikmah Albar</strong> | NIM: <strong>2440304017</strong></p>
+      </div>
+      
+      <!-- Nav & Accessibility untuk Switcher Tema (Challenge C=0) -->
+      <nav aria-label="Pengaturan Tampilan">
+        <button id="themeToggleBtn" class="theme-toggle" aria-label="Beralih ke Mode Gelap" type="button">
+          <span id="themeIcon" aria-hidden="true"></span>
+          <span id="themeText">Dark Mode</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content dengan Elemen Semantik (Poin E1) -->
+  <main id="main-content" class="main-container">
+
+    <!-- Section 1: Ringkasan Statistik (Analisis Data Wajib - Digit Y=1) -->
+    <section class="stats-section" aria-labelledby="stats-heading">
+      <h2 id="stats-heading" class="section-title">Ringkasan Statistik Produk</h2>
+      <div class="stats-grid">
+        <article class="stat-card" tabindex="0">
+          <h3>Rata-Rata Harga</h3>
+          <p id="statAvgPrice" class="stat-value" aria-live="polite">Rp 0</p>
+        </article>
+        <article class="stat-card" tabindex="0">
+          <h3>Produk Termahal</h3>
+          <p id="statMaxPrice" class="stat-value" aria-live="polite">-</p>
+        </article>
+        <article class="stat-card" tabindex="0">
+          <h3>Total Kategori</h3>
+          <p id="statTotalCategories" class="stat-value" aria-live="polite">0 Kategori</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Section 2: Filter Data & Sorting (Digit Y=1) -->
+    <section class="filter-section" aria-labelledby="filter-heading">
+      <h2 id="filter-heading" class="section-title">Filter & Pengurutan Data</h2>
+      <div class="filter-controls">
+        <div class="filter-group">
+          <label for="categoryFilter">Kategori Produk:</label>
+          <select id="categoryFilter" name="categoryFilter">
+            <option value="all">Semua Kategori</option>
+            <!-- Opsi kategori diisi secara dinamis via JS -->
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="priceSort">Urutkan Harga:</label>
+          <select id="priceSort" name="priceSort">
+            <option value="default">Default</option>
+            <option value="low-to-high">Harga: Terendah ke Tertinggi</option>
+            <option value="high-to-low">Harga: Tertinggi ke Terendah</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Indikator State (Loading State & Error State - Poin D) -->
+    <div id="loadingState" class="state-container hidden" aria-live="polite" aria-busy="true">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>Memuat data produk dari REST API...</p>
+    </div>
+
+    <div id="errorState" class="state-container error-box hidden" role="alert" aria-live="assertive">
+      <p id="errorMessage">Gagal mengambil data dari server.</p>
+      <button id="retryBtn" class="btn-retry" type="button">Coba Lagi</button>
+    </div>
+
+    <!-- Section 4: Area Data Utama (Products Grid) -->
+    <section class="products-section" aria-labelledby="products-heading">
+      <h2 id="products-heading" class="section-title">Daftar Produk UMKM</h2>
+      <div id="productsGrid" class="products-grid">
+        <!-- Elemen card produk akan dirender secara dinamis oleh JavaScript -->
+      </div>
+    </section>
+
+    <!-- Section 5: Form Catatan Produk (Validasi Digit Z=7: Min 30 Karakter) -->
+    <section class="form-section" aria-labelledby="form-heading">
+      <h2 id="form-heading" class="section-title">Tambah Catatan Ulasan Produk</h2>
+      
+      <!-- Success / Global Error State untuk Form -->
+      <div id="formAlert" class="alert-box hidden" role="alert" aria-live="polite"></div>
+
+      <form id="noteForm" novalidate>
+        <div class="form-group">
+          <label for="productSelect">Pilih Produk <span class="required" aria-hidden="true">*</span></label>
+          <select id="productSelect" name="productSelect" aria-describedby="productSelectError" required>
+            <option value="">-- Pilih Produk --</option>
+            <!-- Pilihan produk diisi dinamis via JS -->
+          </select>
+          <span class="error-text" id="productSelectError" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="userNote">Catatan Ulasan Produk (Minimal 30 karakter) <span class="required" aria-hidden="true">*</span></label>
+          <textarea 
+            id="userNote" 
+            name="userNote" 
+            rows="4" 
+            placeholder="Tuliskan ulasan atau catatan produk minimal 30 karakter di sini..." 
+            aria-describedby="userNoteError charCount"
+            required></textarea>
+          
+          <div class="form-footer-info">
+            <span class="error-text" id="userNoteError" aria-live="polite"></span>
+            <span id="charCount" class="char-count" aria-live="polite">0 / 30 karakter</span>
+          </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="btn-submit">Kirim Catatan</button>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- Footer: Nama, NIM, dan Kelas (Poin D) -->
+  <footer class="main-footer">
+    <p>&copy; 2026 UMKM Catalog Hub | PTS Pemrograman Web UBT</p>
+    <p>Nama: <strong>Aji Ryan Hikmah Albar</strong> | NIM: <strong>2440304017</strong> | Kelas: <strong>A1</strong></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
