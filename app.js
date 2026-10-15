@@ -69,3 +69,51 @@ function toggleTheme() {
   applyTheme(newTheme);
   localStorage.setItem('app-theme', newTheme);
 }
+
+// Mengambil Data Produk dari REST API menggunakan Fetch API
+async function loadProducts() {
+  try {
+    showLoading();
+    
+    const response = await fetch(API_URL);
+    
+    // Memeriksa Status HTTP Response
+    if (!response.ok) {
+      throw new Error(`Gagal terhubung ke server (HTTP ${response.status})`);
+    }
+    
+    const data = await response.json();
+    allProducts = data.products || [];
+    filteredProducts = [...allProducts];
+    
+    populateCategories(allProducts);
+    populateProductDropdown(allProducts);
+    renderProducts(filteredProducts);
+    calculateStatistics(filteredProducts);
+    
+    showContent();
+  } catch (error) {
+    showError(error.message);
+  }
+}
+
+// Pengelolaan State Tampilan UI (Loading, Error, & Content)
+function showLoading() {
+  loadingState.classList.remove('hidden');
+  errorState.classList.add('hidden');
+  productsGrid.classList.add('hidden');
+}
+
+function showError(message) {
+  loadingState.classList.add('hidden');
+  errorState.classList.remove('hidden');
+  productsGrid.classList.add('hidden');
+  errorMessage.textContent = message;
+}
+
+function showContent() {
+  loadingState.classList.add('hidden');
+  errorState.classList.add('hidden');
+  productsGrid.classList.remove('hidden');
+}
+
