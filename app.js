@@ -34,3 +34,38 @@ const formAlert = document.getElementById('formAlert');
 const themeToggleBtn = document.getElementById('themeToggleBtn');
 const themeIcon = document.getElementById('themeIcon');
 const themeText = document.getElementById('themeText');
+
+// Menginisialisasi Tema saat Halaman Selesai Dimuat
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  setupEventListeners();
+});
+
+// Membaca Preferensi Tema dari localStorage
+function initTheme() {
+  const savedTheme = localStorage.getItem('app-theme') || 'light';
+  applyTheme(savedTheme);
+}
+
+// Menerapkan Atribut Tema ke Elemen HTML
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeIcon.textContent = '☀️';
+    themeText.textContent = 'Light Mode';
+    themeToggleBtn.setAttribute('aria-label', 'Beralih ke Mode Terang');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    themeIcon.textContent = '🌙';
+    themeText.textContent = 'Dark Mode';
+    themeToggleBtn.setAttribute('aria-label', 'Beralih ke Mode Gelap');
+  }
+}
+
+// Mengubah Tema dan Menyimpan ke localStorage
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  applyTheme(newTheme);
+  localStorage.setItem('app-theme', newTheme);
+}
