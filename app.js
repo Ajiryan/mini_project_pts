@@ -179,3 +179,52 @@ function populateProductDropdown(products) {
   });
 }
 
+// Memproses Penyaringan dan Pengurutan Data
+function handleFilterAndSort() {
+  const selectedCategory = categoryFilter.value;
+  const selectedSort = priceSort.value;
+
+  if (selectedCategory === 'all') {
+    filteredProducts = [...allProducts];
+  } else {
+    filteredProducts = allProducts.filter(p => p.category === selectedCategory);
+  }
+
+  if (selectedSort === 'low-to-high') {
+    filteredProducts.sort((a, b) => a.price - b.price);
+  } else if (selectedSort === 'high-to-low') {
+    filteredProducts.sort((a, b) => b.price - a.price);
+  }
+
+  renderProducts(filteredProducts);
+  calculateStatistics(filteredProducts);
+}
+
+// Menghitung Ringkasan Statistik Produk
+function calculateStatistics(products) {
+  if (products.length === 0) {
+    statAvgPrice.textContent = 'USD $0';
+    statMaxPrice.textContent = '-';
+    statTotalCategories.textContent = '0 Kategori';
+    return;
+  }
+
+  const totalPrice = products.reduce((acc, curr) => acc + curr.price, 0);
+  const avgPrice = totalPrice / products.length;
+
+  const maxPriceProduct = products.reduce((prev, current) => {
+    return (prev.price > current.price) ? prev : current;
+  });
+
+  const uniqueCategories = new Set(products.map(p => p.category)).size;
+
+  const formatCurrency = (val) => new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(val);
+
+  statAvgPrice.textContent = formatCurrency(avgPrice);
+  statMaxPrice.textContent = `${maxPriceProduct.title} (${formatCurrency(maxPriceProduct.price)})`;
+  statTotalCategories.textContent = `${uniqueCategories} Kategori`;
+}
+
