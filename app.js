@@ -117,3 +117,65 @@ function showContent() {
   productsGrid.classList.remove('hidden');
 }
 
+// Render Daftar Produk ke Grid DOM
+function renderProducts(products) {
+  productsGrid.innerHTML = '';
+  
+  if (products.length === 0) {
+    productsGrid.innerHTML = '<p class="no-data">Tidak ada produk yang sesuai dengan filter.</p>';
+    return;
+  }
+
+  products.forEach(product => {
+    const card = document.createElement('article');
+    card.className = 'product-card';
+    card.tabIndex = 0;
+    
+    const formattedPrice = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(product.price);
+
+    card.innerHTML = `
+      <div class="product-img-wrapper">
+        <img src="${product.thumbnail}" alt="${product.title}" loading="lazy">
+      </div>
+      <div class="product-body">
+        <span class="product-badge">${product.category}</span>
+        <h3 class="product-title">${product.title}</h3>
+        <p class="product-desc">${product.description}</p>
+        <div class="product-footer">
+          <span class="product-price">${formattedPrice}</span>
+          <span class="product-rating">⭐ ${product.rating}</span>
+        </div>
+      </div>
+    `;
+    
+    productsGrid.appendChild(card);
+  });
+}
+
+// Mengisi Dropdown Kategori Secara Dinamis dari Data API
+function populateCategories(products) {
+  const categories = [...new Set(products.map(p => p.category))];
+  
+  categoryFilter.innerHTML = '<option value="all">Semua Kategori</option>';
+  categories.forEach(category => {
+    const option = document.createElement('option');
+    option.value = category;
+    option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+    categoryFilter.appendChild(option);
+  });
+}
+
+// Mengisi Dropdown Form Pilihan Produk
+function populateProductDropdown(products) {
+  productSelect.innerHTML = '<option value="">-- Pilih Produk --</option>';
+  products.forEach(product => {
+    const option = document.createElement('option');
+    option.value = product.id;
+    option.textContent = product.title;
+    productSelect.appendChild(option);
+  });
+}
+
