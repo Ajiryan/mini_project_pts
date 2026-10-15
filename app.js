@@ -228,3 +228,69 @@ function calculateStatistics(products) {
   statTotalCategories.textContent = `${uniqueCategories} Kategori`;
 }
 
+// Penanganan Validasi dan Pengiriman Form Catatan
+function handleFormSubmit(event) {
+  event.preventDefault();
+  
+  let isValid = true;
+  hideFormAlert();
+
+  productSelectError.textContent = '';
+  userNoteError.textContent = '';
+  productSelect.classList.remove('is-invalid');
+  userNote.classList.remove('is-invalid');
+
+  if (!productSelect.value) {
+    productSelectError.textContent = 'Silakan pilih produk terlebih dahulu.';
+    productSelect.classList.add('is-invalid');
+    isValid = false;
+  }
+
+  const noteValue = userNote.value.trim();
+  if (noteValue.length < 30) {
+    userNoteError.textContent = `Catatan masih ${noteValue.length} karakter. Minimal wajib 30 karakter.`;
+    userNote.classList.add('is-invalid');
+    isValid = false;
+  }
+
+  if (isValid) {
+    const selectedProductName = productSelect.options[productSelect.selectedIndex].text;
+    showFormAlert(`Berhasil! Catatan untuk produk "${selectedProductName}" telah ditambahkan.`, 'success');
+    noteForm.reset();
+    updateCharCount();
+  } else {
+    showFormAlert('Gagal mengirim form. Mohon periksa kembali inputan Anda.', 'error');
+  }
+}
+
+// Memperbarui Penghitung Karakter Secara Real-time
+function updateCharCount() {
+  const count = userNote.value.trim().length;
+  charCount.textContent = `${count} / 30 karakter`;
+  
+  if (count < 30) {
+    charCount.style.color = 'var(--error-text)';
+  } else {
+    charCount.style.color = 'var(--success-text)';
+  }
+}
+
+function showFormAlert(message, type) {
+  formAlert.textContent = message;
+  formAlert.className = `alert-box ${type}`;
+  formAlert.classList.remove('hidden');
+}
+
+function hideFormAlert() {
+  formAlert.classList.add('hidden');
+}
+
+// Registrasi Event Listeners Utama
+function setupEventListeners() {
+  themeToggleBtn.addEventListener('click', toggleTheme);
+  categoryFilter.addEventListener('change', handleFilterAndSort);
+  priceSort.addEventListener('change', handleFilterAndSort);
+  retryBtn.addEventListener('click', loadProducts);
+  userNote.addEventListener('input', updateCharCount);
+  noteForm.addEventListener('submit', handleFormSubmit);
+}
